@@ -26,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -116,6 +117,10 @@ fun BillForm(modifier: Modifier = Modifier, onValChanged: (String) -> Unit = {})
         mutableStateOf("")
     }
 
+    val totalSplit = remember {
+        mutableIntStateOf(1)
+    }
+
     val validState = remember(totalBillState.value) {
         totalBillState.value.trim().isNotEmpty()
     }
@@ -158,14 +163,23 @@ fun BillForm(modifier: Modifier = Modifier, onValChanged: (String) -> Unit = {})
 
                     Row(
                         modifier = Modifier.padding(horizontal = 3.dp),
-                        horizontalArrangement = Arrangement.End
+                        horizontalArrangement = Arrangement.End,
                     ) {
                         RoundIconButton(imageVector = Icons.Default.Remove, onClick = {
-                            Log.d("BUttons", "BillForm: Removed")
+                            if (totalSplit.value > 1) {
+                                totalSplit.value -= 1
+                            }
                         })
 
+                        Text(
+                            text = "${totalSplit.value}",
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 9.dp, end = 9.dp)
+                        )
+
                         RoundIconButton(imageVector = Icons.Default.Add, onClick = {
-                            Log.d("BUttons", "BillForm: Add")
+                            totalSplit.value += 1
                         })
                     }
 
